@@ -357,7 +357,7 @@ window.onload = function(){
 	var start = function(){
 		Neuvol = new Neuroevolution({
 			population:50,
-			network:[nbSensors, [Math.ceil(Math.sqrt(nbSensors * 2))], 2],
+			network:[nbSensors, [10], 2],
 		});
 		game = new Game();
 		game.start();
