@@ -76,7 +76,7 @@ var loadImages = function(sources, callback){
 var Ship = function(json){
 	this.width = 30;
 	this.height = 30;
-	this.x = game.width/2 - this.width/2 - 150;
+	this.x = game.width/2 - this.width/2;
 	this.y = game.height/2 - this.height/2;
 
 	this.direction = 0;
@@ -84,7 +84,7 @@ var Ship = function(json){
 	this.sens = 0;
 
 	this.speed = 3;
-	this.rotationSpeed = 0.2;
+	this.rotationSpeed = 0.05;
 
 	this.alive = true;
 
@@ -282,9 +282,9 @@ Game.prototype.update = function(){
 Game.prototype.spawnAsteroids = function(){
 	var spawns = [
 	{x:0 + 30, y:0 + 30},
-	{x:0 + 30, y:this.height - 50},
+	//{x:0 + 30, y:this.height - 50},
 	{x:this.width - 50, y:this.height - 50},
-	{x:this.width - 50, y:0 + 30}
+	//{x:this.width - 50, y:0 + 30}
 	];
 	for(var i in spawns){
 		var a = new Asteroid({
@@ -322,6 +322,9 @@ Game.prototype.display = function(){
 			// 	this.ctx.stroke();
 			// }
 
+			this.ctx.strokeStyle = "red";
+			this.ctx.strokeRect(this.ships[i].x, this.ships[i].y, this.ships[i].width, this.ships[i].height);
+
 			this.ctx.save(); 
 			this.ctx.translate(this.ships[i].x, this.ships[i].y);
 			this.ctx.translate(this.ships[i].width/2, this.ships[i].height/2);
@@ -331,7 +334,9 @@ Game.prototype.display = function(){
 		}
 	}
 
+	this.ctx.strokeStyle = "yellow";
 	for(var i in this.asteroids){
+		this.ctx.strokeRect(this.asteroids[i].x, this.asteroids[i].y, this.asteroids[i].width, this.asteroids[i].height);
 		this.ctx.drawImage(images.asteroid, this.asteroids[i].x, this.asteroids[i].y, this.asteroids[i].width, this.asteroids[i].height);
 	}
 
