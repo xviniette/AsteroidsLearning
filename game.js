@@ -310,17 +310,17 @@ Game.prototype.display = function(){
 
 	for(var i in this.ships){
 		if(this.ships[i].alive){
-			this.ctx.strokeStyle = "#4C4B49";
-			for(var j = 0; j < nbSensors; j++){
-				var x1 = this.ships[i].x + this.ships[i].width/2;
-				var y1 = this.ships[i].y + this.ships[i].height/2;
-				var x2 = x1 + Math.cos(Math.PI * 2 / nbSensors * j + this.ships[i].direction) * maxSensorSize;
-				var y2 = y1 + Math.sin(Math.PI * 2 / nbSensors * j + this.ships[i].direction) * maxSensorSize;
-				this.ctx.beginPath();
-				this.ctx.moveTo(x1, y1);
-				this.ctx.lineTo(x2, y2);
-				this.ctx.stroke();
-			}
+			// this.ctx.strokeStyle = "#4C4B49";
+			// for(var j = 0; j < nbSensors; j++){
+			// 	var x1 = this.ships[i].x + this.ships[i].width/2;
+			// 	var y1 = this.ships[i].y + this.ships[i].height/2;
+			// 	var x2 = x1 + Math.cos(Math.PI * 2 / nbSensors * j + this.ships[i].direction) * maxSensorSize;
+			// 	var y2 = y1 + Math.sin(Math.PI * 2 / nbSensors * j + this.ships[i].direction) * maxSensorSize;
+			// 	this.ctx.beginPath();
+			// 	this.ctx.moveTo(x1, y1);
+			// 	this.ctx.lineTo(x2, y2);
+			// 	this.ctx.stroke();
+			// }
 
 			this.ctx.save(); 
 			this.ctx.translate(this.ships[i].x, this.ships[i].y);
