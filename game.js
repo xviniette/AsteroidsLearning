@@ -80,7 +80,8 @@ var Ship = function(json){
 	this.y = game.height/2 - this.height/2;
 
 	this.direction = 0;
-	this.move = false;
+	this.movex = 0;
+	this.movey = 0;
 	this.sens = 0;
 
 	this.speed = 3;
@@ -142,12 +143,10 @@ Ship.prototype.getSensorDistances = function(){
 }
 
 Ship.prototype.update = function(){
-	this.direction += this.sens * this.rotationSpeed;
+	//this.direction += this.sens * this.rotationSpeed;
 
-	if(this.move){
-		this.x += Math.cos(this.direction) * this.speed;
-		this.y += Math.sin(this.direction) * this.speed;
-	}
+	this.x += this.movex * this.speed;
+	this.y += this.movey * this.speed;
 }
 
 Ship.prototype.isDead = function(){
@@ -243,17 +242,21 @@ Game.prototype.update = function(){
 		if(this.ships[i].alive){
 			var inputs = this.ships[i].getSensorDistances();
 			var res = this.gen[i].compute(inputs);
-			if(res[0] > 0.5){
-				this.ships[i].move = true;
-			}else{
-				this.ships[i].move = false;
+			this.ships[i].movex = 0;
+			this.ships[i].movey = 0;
+
+			if(res[0] > 0.65){
+				this.ships[i].movex++;
+			}
+			if(res[0] < 0.45){
+				this.ships[i].movex--;
 			}
 
-			this.ships[i].sens = 0;
-			if(res[1] < 0.4){
-				this.ships[i].sens = -1;
-			}else if(res[1] > 0.6){
-				this.ships[i].sens = 1;
+			if(res[1] > 0.65){
+				this.ships[i].movey++;
+			}
+			if(res[1] < 0.45){
+				this.ships[i].movey--;
 			}
 
 			this.ships[i].update();
@@ -336,13 +339,14 @@ Game.prototype.display = function(){
 
 			this.ctx.strokeStyle = "red";
 			this.ctx.strokeRect(this.ships[i].x, this.ships[i].y, this.ships[i].width, this.ships[i].height);
+			this.ctx.drawImage(images.ship, this.ships[i].x, this.ships[i].y, this.ships[i].width, this.ships[i].height);
 
-			this.ctx.save(); 
+			/*this.ctx.save(); 
 			this.ctx.translate(this.ships[i].x, this.ships[i].y);
 			this.ctx.translate(this.ships[i].width/2, this.ships[i].height/2);
 			this.ctx.rotate(this.ships[i].direction + Math.PI/2);
 			this.ctx.drawImage(images.ship, -this.ships[i].width/2, -this.ships[i].height/2, this.ships[i].width, this.ships[i].height);
-			this.ctx.restore();
+			this.ctx.restore();*/
 		}
 	}
 
