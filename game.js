@@ -144,8 +144,10 @@ Ship.prototype.getSensorDistances = function(){
 Ship.prototype.update = function(){
 	this.direction += this.sens * this.rotationSpeed;
 
-	this.x += Math.cos(this.direction) * this.speed;
-	this.y += Math.sin(this.direction) * this.speed;
+	if(this.move){
+		this.x += Math.cos(this.direction) * this.speed;
+		this.y += Math.sin(this.direction) * this.speed;
+	}
 }
 
 Ship.prototype.isDead = function(){
@@ -213,6 +215,7 @@ var Game = function(){
 
 	this.spawnInterval = 120;
 	this.interval = 0;
+	this.maxAsteroids = 10;
 
 	this.gen = [];
 
@@ -270,7 +273,7 @@ Game.prototype.update = function(){
 		this.asteroids[i].update();
 	}
 
-	if(this.interval == 0){
+	if(this.interval == 0 && this.asteroids.length < this.maxAsteroids){
 		this.spawnAsteroids();
 	}
 
