@@ -115,7 +115,8 @@ Ship.prototype.getSensorDistances = function(){
 				var objx = game.asteroids[i].x + game.asteroids[i].width/2;
 				var objy = game.asteroids[i].y + game.asteroids[i].height/2;
 
-				if(Math.abs(Math.atan2(objy - y1, objx - x1) - Math.atan2(y2 - y1, x2 - x1)) <= Math.PI * 2 / maxSensorSize){
+
+				if(Math.abs(Math.atan2(objy - y1, objx - x1) - Math.atan2(y2 - y1, x2 - x1)) <= Math.PI * 2 / nbSensors){
 					var d = collisionSegmentAABB(x1, y1, x2, y2, game.asteroids[i].x, game.asteroids[i].y, game.asteroids[i].width, game.asteroids[i].height);
 					if(d/maxSensorSize < sensors[j]){
 						sensors[j] = d/maxSensorSize;
