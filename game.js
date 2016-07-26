@@ -104,15 +104,23 @@ Ship.prototype.getSensorDistances = function(){
 	}
 
 	for(var i in game.asteroids){
-		for(var j = 0; j < nbSensors; j++){
-			var x1 = this.x + this.width/2;
-			var y1 = this.y + this.height/2;
-			var x2 = x1 + Math.cos(Math.PI * 2 / nbSensors * j + this.direction) * maxSensorSize;
-			var y2 = y1 + Math.sin(Math.PI * 2/ nbSensors * j + this.direction) * maxSensorSize;
+		var distance = Math.sqrt( Math.pow(game.asteroids[i].x + game.asteroids[i].width/2 - this.x + this.width/2, 2) + Math.pow(game.asteroids[i].y + game.asteroids[i].height/2 - this.y + this.height/2, 2));
+		if(distance <= maxSensorSize){
+			for(var j = 0; j < nbSensors; j++){
+				var x1 = this.x + this.width/2;
+				var y1 = this.y + this.height/2;
+				var x2 = x1 + Math.cos(Math.PI * 2 / nbSensors * j + this.direction) * maxSensorSize;
+				var y2 = y1 + Math.sin(Math.PI * 2/ nbSensors * j + this.direction) * maxSensorSize;
 
-			var d = collisionSegmentAABB(x1, y1, x2, y2, game.asteroids[i].x, game.asteroids[i].y, game.asteroids[i].width, game.asteroids[i].height);
-			if(d/maxSensorSize < sensors[j]){
-				sensors[j] = d/maxSensorSize;
+				var objx = game.asteroids[i].x + game.asteroids[i].width/2;
+				var objy = game.asteroids[i].y + game.asteroids[i].height/2;
+
+				if(Math.abs(Math.atan2(objy - y1, objx - x1) - Math.atan2(y2 - y1, x2 - x1)) <= Math.PI * 2 / maxSensorSize){
+					var d = collisionSegmentAABB(x1, y1, x2, y2, game.asteroids[i].x, game.asteroids[i].y, game.asteroids[i].width, game.asteroids[i].height);
+					if(d/maxSensorSize < sensors[j]){
+						sensors[j] = d/maxSensorSize;
+					}		
+				}
 			}
 		}
 	}
