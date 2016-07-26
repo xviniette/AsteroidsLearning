@@ -84,7 +84,7 @@ var Ship = function(json){
 	this.sens = 0;
 
 	this.speed = 3;
-	this.rotationSpeed = 0.05;
+	this.rotationSpeed = 0.3;
 
 	this.alive = true;
 
