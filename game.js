@@ -8,6 +8,34 @@ var maxSensorSize = 200;
 
 var images = {};
 
+(function() {
+        var timeouts = [];
+        var messageName = "zero-timeout-message";
+
+        // Like setTimeout, but only takes a function argument.  There's
+        // no time argument (always zero) and no arguments (you have to
+        // use a closure).
+        function setZeroTimeout(fn) {
+            timeouts.push(fn);
+            window.postMessage(messageName, "*");
+        }
+
+        function handleMessage(event) {
+            if (event.source == window && event.data == messageName) {
+                event.stopPropagation();
+                if (timeouts.length > 0) {
+                    var fn = timeouts.shift();
+                    fn();
+                }
+            }
+        }
+
+        window.addEventListener("message", handleMessage, true);
+
+        // Add the one thing we want added to the window object.
+        window.setZeroTimeout = setZeroTimeout;
+    })();
+
 var collisionAABB = function(obj1, obj2){
 	if(!(obj1.x > obj2.x + obj2.width || obj1.x + obj1.width < obj2.x || obj1.y > obj2.y + obj2.height || obj1.y + obj1.height < obj2.y)){
 		return true;
@@ -287,9 +315,17 @@ Game.prototype.update = function(){
 
 	this.score++;
 	var self = this;
-	setTimeout(function(){
-		self.update();
-	}, 1000/FPS);
+
+	if (FPS == 0) {
+		setZeroTimeout(function() {
+			self.update();
+		});
+	}
+	else {
+			setTimeout(function(){
+			self.update();
+		}, 1000/FPS);
+	}
 
 	this.display();
 }
@@ -377,9 +413,16 @@ window.onload = function(){
 		});
 		game = new Game();
 		game.start();
-		setTimeout(function(){
-			game.update();
-		}, 1000/FPS);
+		if (FPS == 0) {
+			setZeroTimeout(function() {
+				game.update();
+			});
+		}
+		else {
+				setTimeout(function(){
+				game.update();
+			}, 1000/FPS);
+		}
 	}
 
 
