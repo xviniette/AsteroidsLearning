@@ -9,168 +9,168 @@ var maxSensorSize = 200;
 var images = {};
 
 (function() {
-        var timeouts = [];
-        var messageName = "zero-timeout-message";
+	var timeouts = [];
+	var messageName = "zero-timeout-message";
 
         // Like setTimeout, but only takes a function argument.  There's
         // no time argument (always zero) and no arguments (you have to
         // use a closure).
-        function setZeroTimeout(fn) {
-            timeouts.push(fn);
-            window.postMessage(messageName, "*");
-        }
+function setZeroTimeout(fn) {
+	timeouts.push(fn);
+	window.postMessage(messageName, "*");
+}
 
-        function handleMessage(event) {
-            if (event.source == window && event.data == messageName) {
-                event.stopPropagation();
-                if (timeouts.length > 0) {
-                    var fn = timeouts.shift();
-                    fn();
-                }
-            }
-        }
+function handleMessage(event) {
+	if (event.source == window && event.data == messageName) {
+		event.stopPropagation();
+		if (timeouts.length > 0) {
+			var fn = timeouts.shift();
+			fn();
+		}
+	}
+}
 
-        window.addEventListener("message", handleMessage, true);
+window.addEventListener("message", handleMessage, true);
 
         // Add the one thing we want added to the window object.
         window.setZeroTimeout = setZeroTimeout;
     })();
 
-var collisionAABB = function(obj1, obj2){
-	if(!(obj1.x > obj2.x + obj2.width || obj1.x + obj1.width < obj2.x || obj1.y > obj2.y + obj2.height || obj1.y + obj1.height < obj2.y)){
-		return true;
-	}
-	return false;
-}
+    var collisionAABB = function(obj1, obj2){
+    	if(!(obj1.x > obj2.x + obj2.width || obj1.x + obj1.width < obj2.x || obj1.y > obj2.y + obj2.height || obj1.y + obj1.height < obj2.y)){
+    		return true;
+    	}
+    	return false;
+    }
 
-var collisionSegments = function(l1x1, l1y1, l1x2, l1y2, l2x1, l2y1, l2x2, l2y2) {
-	var denominator = ((l2y2 - l2y1) * (l1x2 - l1x1)) - ((l2x2 - l2x1) * (l1y2 - l1y1));
-	if (denominator == 0) {
-		return false;
-	}
-	var a = l1y1 - l2y1;
-	var b = l1x1 - l2x1;
-	var numerator1 = ((l2x2 - l2x1) * a) - ((l2y2 - l2y1) * b);
-	var numerator2 = ((l1x2 - l1x1) * a) - ((l1y2 - l1y1) * b);
-	a = numerator1 / denominator;
-	b = numerator2 / denominator;
+    var collisionSegments = function(l1x1, l1y1, l1x2, l1y2, l2x1, l2y1, l2x2, l2y2) {
+    	var denominator = ((l2y2 - l2y1) * (l1x2 - l1x1)) - ((l2x2 - l2x1) * (l1y2 - l1y1));
+    	if (denominator == 0) {
+    		return false;
+    	}
+    	var a = l1y1 - l2y1;
+    	var b = l1x1 - l2x1;
+    	var numerator1 = ((l2x2 - l2x1) * a) - ((l2y2 - l2y1) * b);
+    	var numerator2 = ((l1x2 - l1x1) * a) - ((l1y2 - l1y1) * b);
+    	a = numerator1 / denominator;
+    	b = numerator2 / denominator;
 
-	var x = l1x1 + (a * (l1x2 - l1x1));
-	var y = l1y1 + (a * (l1y2 - l1y1));
-	if (a > 0 && a < 1 && b > 0 && b < 1) {
-		return Math.sqrt(Math.pow(x - l1x1, 2) + Math.pow(y - l1y1, 2));
-	}
-	return false;
-};
+    	var x = l1x1 + (a * (l1x2 - l1x1));
+    	var y = l1y1 + (a * (l1y2 - l1y1));
+    	if (a > 0 && a < 1 && b > 0 && b < 1) {
+    		return Math.sqrt(Math.pow(x - l1x1, 2) + Math.pow(y - l1y1, 2));
+    	}
+    	return false;
+    };
 
-var collisionSegmentAABB = function(x1, y1, x2, y2, ax, ay, aw, ah){
-	var distance = 999999;
-	var d = [];
-	d.push(collisionSegments(x1, y1, x2, y2, ax, ay, ax + aw, ay));
-	d.push(collisionSegments(x1, y1, x2, y2, ax, ay, ax, ay + ah));
-	d.push(collisionSegments(x1, y1, x2, y2, ax + aw, ay,  ax + aw, ay + ah));
-	d.push(collisionSegments(x1, y1, x2, y2, ax, ay + ah,  ax + aw, ay + ah));
+    var collisionSegmentAABB = function(x1, y1, x2, y2, ax, ay, aw, ah){
+    	var distance = 999999;
+    	var d = [];
+    	d.push(collisionSegments(x1, y1, x2, y2, ax, ay, ax + aw, ay));
+    	d.push(collisionSegments(x1, y1, x2, y2, ax, ay, ax, ay + ah));
+    	d.push(collisionSegments(x1, y1, x2, y2, ax + aw, ay,  ax + aw, ay + ah));
+    	d.push(collisionSegments(x1, y1, x2, y2, ax, ay + ah,  ax + aw, ay + ah));
 
-	for(var i in d){
-		if(d[i] !== false && d[i] < distance){
-			distance = d[i];
-		}
-	}
+    	for(var i in d){
+    		if(d[i] !== false && d[i] < distance){
+    			distance = d[i];
+    		}
+    	}
 
-	return distance;
-}
+    	return distance;
+    }
 
-var speed = function(fps){
-	FPS = parseInt(fps);
-}
+    var speed = function(fps){
+    	FPS = parseInt(fps);
+    }
 
-var loadImages = function(sources, callback){
-	var nb = 0;
-	var loaded = 0;
-	var imgs = {};
-	for(var i in sources){
-		nb++;
-		imgs[i] = new Image();
-		imgs[i].src = sources[i];
-		imgs[i].onload = function(){
-			loaded++;
-			if(loaded == nb){
-				callback(imgs);
-			}
-		}
-	}
-}
+    var loadImages = function(sources, callback){
+    	var nb = 0;
+    	var loaded = 0;
+    	var imgs = {};
+    	for(var i in sources){
+    		nb++;
+    		imgs[i] = new Image();
+    		imgs[i].src = sources[i];
+    		imgs[i].onload = function(){
+    			loaded++;
+    			if(loaded == nb){
+    				callback(imgs);
+    			}
+    		}
+    	}
+    }
 
-var Ship = function(json){
-	this.width = 30;
-	this.height = 30;
-	this.x = game.width/2 - this.width/2;
-	this.y = game.height/2 - this.height/2;
+    var Ship = function(json){
+    	this.width = 30;
+    	this.height = 30;
+    	this.x = game.width/2 - this.width/2;
+    	this.y = game.height/2 - this.height/2;
 
-	this.direction = 0;
-	this.movex = 0;
-	this.movey = 0;
-	this.sens = 0;
+    	this.direction = 0;
+    	this.movex = 0;
+    	this.movey = 0;
+    	this.sens = 0;
 
-	this.speed = 3;
-	this.rotationSpeed = 0.3;
+    	this.speed = 3;
+    	this.rotationSpeed = 0.3;
 
-	this.alive = true;
+    	this.alive = true;
 
-	this.init(json);
-}
+    	this.init(json);
+    }
 
-Ship.prototype.init = function(json){
-	for(var i in json){
-		this[i] = json[i];
-	}
-}
+    Ship.prototype.init = function(json){
+    	for(var i in json){
+    		this[i] = json[i];
+    	}
+    }
 
-Ship.prototype.getSensorDistances = function(){
-	var sensors = [];
-	for(var i = 0; i < nbSensors; i++){
-		sensors.push(1);
-	}
+    Ship.prototype.getSensorDistances = function(){
+    	var sensors = [];
+    	for(var i = 0; i < nbSensors; i++){
+    		sensors.push(1);
+    	}
 
-	for(var i in game.asteroids){
-		var distance = Math.sqrt( Math.pow(game.asteroids[i].x + game.asteroids[i].width/2 - this.x + this.width/2, 2) + Math.pow(game.asteroids[i].y + game.asteroids[i].height/2 - this.y + this.height/2, 2));
-		if(distance <= maxSensorSize){
-			for(var j = 0; j < nbSensors; j++){
-				var x1 = this.x + this.width/2;
-				var y1 = this.y + this.height/2;
-				var x2 = x1 + Math.cos(Math.PI * 2 / nbSensors * j + this.direction) * maxSensorSize;
-				var y2 = y1 + Math.sin(Math.PI * 2/ nbSensors * j + this.direction) * maxSensorSize;
+    	for(var i in game.asteroids){
+    		var distance = Math.sqrt( Math.pow(game.asteroids[i].x + game.asteroids[i].width/2 - this.x + this.width/2, 2) + Math.pow(game.asteroids[i].y + game.asteroids[i].height/2 - this.y + this.height/2, 2));
+    		if(distance <= maxSensorSize){
+    			for(var j = 0; j < nbSensors; j++){
+    				var x1 = this.x + this.width/2;
+    				var y1 = this.y + this.height/2;
+    				var x2 = x1 + Math.cos(Math.PI * 2 / nbSensors * j + this.direction) * maxSensorSize;
+    				var y2 = y1 + Math.sin(Math.PI * 2/ nbSensors * j + this.direction) * maxSensorSize;
 
-				var objx = game.asteroids[i].x + game.asteroids[i].width/2;
-				var objy = game.asteroids[i].y + game.asteroids[i].height/2;
+    				var objx = game.asteroids[i].x + game.asteroids[i].width/2;
+    				var objy = game.asteroids[i].y + game.asteroids[i].height/2;
 
 
-				if(Math.abs(Math.atan2(objy - y1, objx - x1) - Math.atan2(y2 - y1, x2 - x1)) <= Math.PI * 2 / nbSensors){
-					var d = collisionSegmentAABB(x1, y1, x2, y2, game.asteroids[i].x, game.asteroids[i].y, game.asteroids[i].width, game.asteroids[i].height);
-					if(d/maxSensorSize < sensors[j]){
-						sensors[j] = d/maxSensorSize;
-					}		
-				}
-			}
-		}
-	}
+    				if(Math.abs(Math.atan2(objy - y1, objx - x1) - Math.atan2(y2 - y1, x2 - x1)) <= Math.PI * 2 / nbSensors){
+    					var d = collisionSegmentAABB(x1, y1, x2, y2, game.asteroids[i].x, game.asteroids[i].y, game.asteroids[i].width, game.asteroids[i].height);
+    					if(d/maxSensorSize < sensors[j]){
+    						sensors[j] = d/maxSensorSize;
+    					}		
+    				}
+    			}
+    		}
+    	}
 
-	for(var j = 0; j < nbSensors; j++){
-		var x1 = this.x + this.width/2;
-		var y1 = this.y + this.height/2;
-		var x2 = x1 + Math.cos(Math.PI / nbSensors * j + this.direction) * maxSensorSize;
-		var y2 = y1 + Math.sin(Math.PI / nbSensors * j + this.direction) * maxSensorSize;
+    	for(var j = 0; j < nbSensors; j++){
+    		var x1 = this.x + this.width/2;
+    		var y1 = this.y + this.height/2;
+    		var x2 = x1 + Math.cos(Math.PI / nbSensors * j + this.direction) * maxSensorSize;
+    		var y2 = y1 + Math.sin(Math.PI / nbSensors * j + this.direction) * maxSensorSize;
 
-		var d = collisionSegmentAABB(x1, y1, x2, y2, 0, 0, game.width, game.height);
-		if(d/maxSensorSize < sensors[j]){
-			sensors[j] = d/maxSensorSize;
-		}
-	}
+    		var d = collisionSegmentAABB(x1, y1, x2, y2, 0, 0, game.width, game.height);
+    		if(d/maxSensorSize < sensors[j]){
+    			sensors[j] = d/maxSensorSize;
+    		}
+    	}
 
-	return sensors;
-}
+    	return sensors;
+    }
 
-Ship.prototype.update = function(){
+    Ship.prototype.update = function(){
 	//this.direction += this.sens * this.rotationSpeed;
 
 	this.x += this.movex * this.speed;
@@ -322,7 +322,7 @@ Game.prototype.update = function(){
 		});
 	}
 	else {
-			setTimeout(function(){
+		setTimeout(function(){
 			self.update();
 		}, 1000/FPS);
 	}
@@ -410,6 +410,9 @@ window.onload = function(){
 		Neuvol = new Neuroevolution({
 			population:50,
 			network:[nbSensors, [9], 2],
+			randomBehaviour:0.1,
+			mutationRate:0.5, 
+			mutationRange:2, 
 		});
 		game = new Game();
 		game.start();
@@ -419,7 +422,7 @@ window.onload = function(){
 			});
 		}
 		else {
-				setTimeout(function(){
+			setTimeout(function(){
 				game.update();
 			}, 1000/FPS);
 		}
