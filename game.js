@@ -1,6 +1,7 @@
 var Neuvol;
 var game;
 var FPS = 60;
+var timeout;
 
 var nbSensors = 16;
 var maxSensorSize = 200;
@@ -317,12 +318,12 @@ Game.prototype.update = function(){
 	var self = this;
 
 	if (FPS == 0) {
-		setZeroTimeout(function() {
+		timeout = setZeroTimeout(function() {
 			self.update();
 		});
 	}
 	else {
-		setTimeout(function(){
+		timeout = setTimeout(function(){
 			self.update();
 		}, 1000/FPS);
 	}
@@ -407,22 +408,24 @@ window.onload = function(){
 	};
 
 	var start = function(){
-		Neuvol = new Neuroevolution({
-			population:50,
-			network:[nbSensors, [9], 2],
-			randomBehaviour:0.1,
-			mutationRate:0.5, 
-			mutationRange:2, 
-		});
+		if(Neuvol == null){
+			Neuvol = new Neuroevolution({
+				population:50,
+				network:[nbSensors, [9], 2],
+				randomBehaviour:0.1,
+				mutationRate:0.5, 
+				mutationRange:2, 
+			});
+		}
 		game = new Game();
 		game.start();
 		if (FPS == 0) {
-			setZeroTimeout(function() {
+			timeout = setZeroTimeout(function() {
 				game.update();
 			});
 		}
 		else {
-			setTimeout(function(){
+			timeout = setTimeout(function(){
 				game.update();
 			}, 1000/FPS);
 		}
