@@ -230,7 +230,7 @@ Asteroid.prototype.update = function(){
 }
 
 
-var Game = function(){
+var Game = function(genNumber){
 	this.asteroids = [];
 	this.ships = [];
 
@@ -248,7 +248,7 @@ var Game = function(){
 	this.gen = [];
 
 	this.alives = 0;
-	this.generation = 0;
+	this.generation = genNumber;
 }
 
 Game.prototype.start = function(){
@@ -400,7 +400,8 @@ Game.prototype.display = function(){
 	this.ctx.fillText("Alive : "+this.alives+" / "+Neuvol.options.population, 10, 75);
 }
 
-window.onload = function(){
+window.onload = function(genNumber){
+	if( isNaN(genNumber)) genNumber = 0;
 	var sprites = {
 		ship:"img/ship.png",
 		asteroid:"img/asteroid.png",
@@ -417,7 +418,7 @@ window.onload = function(){
 				mutationRange:2, 
 			});
 		}
-		game = new Game();
+		game = new Game(genNumber);
 		game.start();
 		if (FPS == 0) {
 			timeout = setZeroTimeout(function() {
