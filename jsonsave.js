@@ -30,6 +30,6 @@ var saveJson = function(){
 	var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify([ Neuvol, game.generation ]));
 	var dlAnchorElem = document.getElementById('downloadJson');
 	dlAnchorElem.setAttribute("href",     dataStr     );
-	dlAnchorElem.setAttribute("download", "Neuvol.json");
+	dlAnchorElem.setAttribute("download", "Neuvol"+game.generation+".json");
 	dlAnchorElem.click();
 }
