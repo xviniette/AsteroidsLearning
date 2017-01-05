@@ -1,4 +1,4 @@
-var Neuroevolution = function(options){
+var Neuroevolution = function(options, gens){
 	var self = this;
 	self.options = {
 		activation:function(a){
@@ -303,5 +303,14 @@ var Neuroevolution = function(options){
 
 	self.networkScore = function(network, score){
 		self.generations.addGenome(new Genome(score, network.getSave()));
+	}
+
+	if(gens != undefined){
+		self.generations.generations[0] = new Generation();
+		for(var prop in gens.generations[0].genomes){
+			self.generations.generations[0].genomes.push(new Genome(
+						gens.generations[0].genomes[prop].score,
+						gens.generations[0].genomes[prop].network));
+		}
 	}
 }

@@ -1,17 +1,28 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>NeuroEvolution : Asteroids</title>
-</head>
-<body>
-	<canvas id="asteroids" width="500" height="500"></canvas> <br/>
-	<button onclick="speed(60)">x1</button> 
-	<button onclick="speed(120)">x2</button> 
-	<button onclick="speed(180)">x3</button> 
-	<button onclick="speed(300)">x5</button>
-       	<button onclick="speed(0)">max</button>	<br/>
-	<a href="https://github.com/xviniette/AsteroidsLearning">GitHub Repository</a>
-	<script src = "Neuroevolution.js"></script>
-	<script src = "game.js"></script>
-</body>
+	<head>
+		<title>NeuroEvolution : Asteroids</title>
+	</head>
+	<body>
+		<canvas id="asteroids" width="500" height="500"></canvas> <br/>
+		<button onclick="speed(60)">x1</button>
+		<button onclick="speed(120)">x2</button>
+		<button onclick="speed(180)">x3</button>
+		<button onclick="speed(300)">x5</button>
+		<button onclick="speed(0)">max</button>
+		<br />
+		<br />
+		<form>
+			<input id='json' type='file' accept='.json' required='required' />
+			<button type='button' onclick='loadJson()'>load json</button>
+			<button type='button' onclick='saveJson()'>save json</button>
+			<a id='downloadJson' style='display:none;'></a>
+		</form>
+		<br />
+		<br />
+		<a href="https://github.com/xviniette/AsteroidsLearning">GitHub Repository</a>
+		<script src = "jsonsave.js"></script>
+		<script src = "Neuroevolution.js"></script>
+		<script src = "game.js"></script>
+	</body>
 </html>

@@ -1,6 +1,7 @@
 var Neuvol;
 var game;
 var FPS = 60;
+var timeout;
 
 var nbSensors = 16;
 var maxSensorSize = 200;
@@ -229,7 +230,7 @@ Asteroid.prototype.update = function(){
 }
 
 
-var Game = function(){
+var Game = function(genNumber){
 	this.asteroids = [];
 	this.ships = [];
 
@@ -247,7 +248,7 @@ var Game = function(){
 	this.gen = [];
 
 	this.alives = 0;
-	this.generation = 0;
+	this.generation = genNumber;
 }
 
 Game.prototype.start = function(){
@@ -317,12 +318,12 @@ Game.prototype.update = function(){
 	var self = this;
 
 	if (FPS == 0) {
-		setZeroTimeout(function() {
+		timeout = setZeroTimeout(function() {
 			self.update();
 		});
 	}
 	else {
-		setTimeout(function(){
+		timeout = setTimeout(function(){
 			self.update();
 		}, 1000/FPS);
 	}
@@ -399,7 +400,8 @@ Game.prototype.display = function(){
 	this.ctx.fillText("Alive : "+this.alives+" / "+Neuvol.options.population, 10, 75);
 }
 
-window.onload = function(){
+window.onload = function(genNumber){
+	if( isNaN(genNumber)) genNumber = 0;
 	var sprites = {
 		ship:"img/ship.png",
 		asteroid:"img/asteroid.png",
@@ -407,22 +409,24 @@ window.onload = function(){
 	};
 
 	var start = function(){
-		Neuvol = new Neuroevolution({
-			population:50,
-			network:[nbSensors, [9], 2],
-			randomBehaviour:0.1,
-			mutationRate:0.5, 
-			mutationRange:2, 
-		});
-		game = new Game();
+		if(Neuvol == null){
+			Neuvol = new Neuroevolution({
+				population:50,
+				network:[nbSensors, [9], 2],
+				randomBehaviour:0.1,
+				mutationRate:0.5, 
+				mutationRange:2, 
+			});
+		}
+		game = new Game(genNumber);
 		game.start();
 		if (FPS == 0) {
-			setZeroTimeout(function() {
+			timeout = setZeroTimeout(function() {
 				game.update();
 			});
 		}
 		else {
-			setTimeout(function(){
+			timeout = setTimeout(function(){
 				game.update();
 			}, 1000/FPS);
 		}
